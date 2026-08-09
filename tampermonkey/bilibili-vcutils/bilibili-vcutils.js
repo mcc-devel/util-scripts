@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BV2AV + 视频统计
 // @description  支持 Safari | 干净 URL | 视频统计 | V 家成就
-// @version      3.2.0
+// @version      3.2.1
 // @license      MIT
 // @author       Joseph Chris <joseph@josephcz.xyz>
 // @icon         https://www.bilibili.com/favicon.ico
@@ -21,7 +21,6 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
-
 
 const VCUtil = {
     ConfigFlags: {
@@ -86,13 +85,13 @@ VCUtil.URL = {
             };
         }
         if (location.pathname.startsWith("/festival/")) {
-            const actualVideo = new URL(document.querySelector("#link0").value).pathname;
+            const actualVideo = new URL(document.querySelector("#link0").value);
             const fesName = location.pathname.slice('/festival/'.length);
-            const videoId = actualVideo
+            const videoId = actualVideo.pathname
                 .slice('/video/'.length)
                 .replace(/\/$/, '');
             const avid = videoId.startsWith('av') ? Number(videoId.slice(2)) : VCUtil.Convert.bv2av(videoId);
-            const part = new URL(actualVideo).searchParams.get("p") || 1;
+            const part = actualVideo.searchParams.get("p") || 1;
             return {
                 avid: avid, bvid: VCUtil.Convert.av2bv(avid), part: part, type: 'festival',
                 standardUrl: `https://www.bilibili.com/festival/${fesName}?bvid=${VCUtil.Convert.av2bv(avid)}${part > 1 ? `&p=${part}` : ''}`
